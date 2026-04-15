@@ -20,11 +20,11 @@ tasks:
     # silent: true
   setup:
     cmds:
-      - cd ui && npm i
+      - cd ui && flutter pub get
       - go get -v ./...
   clean:
     cmds:
-      - cd ui && rm -rf dist
+      - cd ui && rm -rf build
       - rm -rf {{.BINARY_LOC}}
   test:
     cmds:
@@ -39,7 +39,7 @@ tasks:
     # watch: true
   build-ui:
     cmds:
-      - cd ui && npm run build
+      - cd ui && flutter build web --base-href "/ui/"
   run:
     cmds:
       - task: clean
@@ -56,8 +56,14 @@ tasks:
   ui-dev:
     desc: Start Vue development server
     cmds:
-      - cd ui && npm run dev
+      - cd ui && flutter run --device-id chrome
   go-dev:
     desc: Start Go server with live reload
     cmds:
       - go tool air
+  package:
+    desc: Build both UI and Backend and generate a single native binary
+    cmds:
+      - task: clean
+      - task: build-ui
+      - task: build
