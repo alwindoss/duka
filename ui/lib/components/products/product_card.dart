@@ -6,11 +6,13 @@ class ProductCard extends StatelessWidget {
     required this.productName,
     required this.productPrice,
     required this.isOutOfStock,
+    required this.productThumbnailURL,
   });
 
   final String productName;
   final double productPrice;
   final bool isOutOfStock;
+  final String productThumbnailURL;
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +26,7 @@ class ProductCard extends StatelessWidget {
             width: 250,
             height: 250,
             padding: EdgeInsets.all(5),
-            child: Image.network(
-              "https://nobero.com/cdn/shop/files/burgundy_e86469e5-d1fb-495c-aa57-e07d8a672b0a.jpg",
-              fit: BoxFit.cover,
-            ),
+            child: Image.network(productThumbnailURL, fit: BoxFit.cover),
           ),
           Text(
             productName,

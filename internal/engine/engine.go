@@ -18,9 +18,19 @@ func Start(cfg *Config) error {
 	staticFS := ui.GetFileSystem()
 
 	// API Routes should always be about the r.NoRoute
-	r.GET("/api/v1/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "alive"})
-	})
+	// Grouping the v1 api
+	{
+		v1 := r.Group("/duka/api/v1")
+		v1.POST("/login", func(ctx *gin.Context) {})
+		v1.POST("/logout", func(ctx *gin.Context) {})
+		v1.GET("/health", func(c *gin.Context) {
+			c.JSON(200, gin.H{"status": "alive"})
+		})
+		productsRouter := v1.Group("/products")
+		productsRouter.GET("/", func(ctx *gin.Context) {
+			ctx.JSONP(200, gin.H{"1": "Product 1"})
+		})
+	}
 
 	// 2. Serve the static files
 	// This handles JS, CSS, and images automatically
