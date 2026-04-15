@@ -50,7 +50,7 @@ tasks:
     cmds:
       - go tool migrate -database YOUR_DATABASE_URL -path PATH_TO_YOUR_MIGRATIONS up # Update this command with the right arguments when you have it
   dev:
-    cmds:
+    deps:
       - task: ui-dev
       - task: go-dev
   ui-dev:
