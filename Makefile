@@ -1,4 +1,4 @@
-.PHONY: dev build run clean setup
+.PHONY: dev build run clean setup package
 dev:
 	go tool task dev --parallel
 setup:
@@ -12,3 +12,6 @@ run:
 
 clean:
 	go tool task clean
+
+package:
+	go tool task package
