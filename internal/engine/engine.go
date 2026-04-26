@@ -3,6 +3,7 @@ package engine
 import (
 	"net/http"
 
+	"github.com/alwindoss/duka/internal/app/users"
 	"github.com/alwindoss/duka/ui"
 	"github.com/gin-gonic/gin"
 )
@@ -16,20 +17,30 @@ func Start(cfg *Config) error {
 
 	// 1. Get the embedded filesystem
 	staticFS := ui.GetFileSystem()
-
+	loginSvc := new(users.LoginService)
 	// API Routes should always be about the r.NoRoute
 	// Grouping the v1 api
 	{
 		v1 := r.Group("/duka/api/v1")
-		v1.POST("/login", func(ctx *gin.Context) {})
-		v1.POST("/logout", func(ctx *gin.Context) {})
+		// v1.POST("/login", users.LoginController(loginSvc))
 		v1.GET("/health", func(c *gin.Context) {
 			c.JSON(200, gin.H{"status": "alive"})
 		})
-		productsRouter := v1.Group("/products")
-		productsRouter.GET("/", func(ctx *gin.Context) {
-			ctx.JSONP(200, gin.H{"1": "Product 1"})
-		})
+
+		// Users routes
+		{
+			usersRouter := v1.Group("/users")
+			usersRouter.POST("/login", users.LoginController(loginSvc))
+			usersRouter.POST("/logout", func(ctx *gin.Context) {})
+		}
+
+		// Products routes
+		{
+			productsRouter := v1.Group("/products")
+			productsRouter.GET("/", func(ctx *gin.Context) {
+				ctx.JSONP(200, gin.H{"1": "Product 1"})
+			})
+		}
 	}
 
 	// 2. Serve the static files
@@ -44,10 +55,10 @@ func Start(cfg *Config) error {
 	// 4. Handle Flutter's "Deep Linking" (SPAs)
 	// If a user refreshes on /ui/settings, Gin will 404.
 	// We should serve index.html for unknown routes under /ui.
-	r.NoRoute(func(c *gin.Context) {
-		// If the request is for the UI path, serve index.html
-		c.FileFromFS("/", http.FS(staticFS))
-	})
+	// r.NoRoute(func(c *gin.Context) {
+	// 	// If the request is for the UI path, serve index.html
+	// 	c.FileFromFS("/", http.FS(staticFS))
+	// })
 
 	err := r.Run(cfg.Addr)
 	if err != nil {

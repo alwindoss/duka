@@ -5,7 +5,7 @@ version: '3'
 vars:
   GREETING: Hello, world!
   APPLICATION_NAME: duka
-  BUILD_ENV: CGO_ENABLED=0
+  BUILD_ENV: CGO_ENABLED=0 GOOS=linux GOARCH=amd64
   BUILD_FLAGS: -o
   BINARY_LOC: bin
   GOBUILD: go build
@@ -39,7 +39,11 @@ tasks:
     # watch: true
   build-ui:
     cmds:
-      - cd ui && flutter build web --base-href "/ui/"
+      - cd ui && flutter build web --base-href "/ui/" --release
+  run-backend:
+    cmds:
+      - task: build
+      - ./{{.BINARY_LOC}}/{{.APPLICATION_NAME}}
   run:
     cmds:
       - task: clean

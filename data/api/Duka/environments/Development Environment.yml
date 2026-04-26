@@ -1,0 +1,6 @@
+name: Development Environment
+variables:
+  - name: HOST
+    value: localhost
+  - name: PORT
+    value: "9090"
